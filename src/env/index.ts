@@ -1,21 +1,18 @@
 import { config } from "dotenv";
 import { z } from "zod";
 
-// quando utilizamos Jest ou Vitest, eles preenchem a variavel NODE_ENV com test
 if (process.env.NODE_ENV === "test") {
-  config({ path: ".env.test" }); // muda para o env.test
+  config({ path: ".env.test" });
 } else {
-  config(); // se nao, .env
+  config();
 }
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("production"),
+  DATABASE_CLIENT: z.enum(["sqlite", "pg"]),
   DATABASE_URL: z.string(),
-  PORT: z.number().default(3333),
+  PORT: z.coerce.number().default(3333),
 });
-
-// console.log(process.env);
-// console.log(process.env.NODE_ENV);
 
 const _env = envSchema.safeParse(process.env);
 
